@@ -19,9 +19,9 @@ class DFLocationManager: NSObject {
     @objc private let locationManager: CLLocationManager = CLLocationManager()
     ///上次获取权限
     @objc private var lastTimeStatus: CLAuthorizationStatus = .notDetermined
-    ///上次定位结果
-    @objc private var lastLocation: CLLocation?
-    
+    ///是否定位中
+    @objc private var isLocationing: Bool = false
+
     
     /// 私有构建方法
     private override init() {
@@ -54,6 +54,7 @@ class DFLocationManager: NSObject {
             }
             locationManager.startUpdatingLocation()
         }
+        isLocationing = true
         lastTimeStatus = status
     }
     
@@ -103,47 +104,20 @@ extension DFLocationManager: CLLocationManagerDelegate {
         self.stopUpdatingLocation()
         if let currenLoction = locations.last {
             print("定位经纬度：\(currenLoction.coordinate.longitude), \(currenLoction.coordinate.latitude)")
-            if let lastObjct = lastLocation {
-                //计算2次结果是否相同(解决单次定位多次数据返回问题)
-                if currenLoction.isEqualWithCoordinate(lastObjct) {
-                    return
-                }
+            //(解决单次定位多次数据返回问题)
+            if !isLocationing {
+                return
             }
-            lastLocation = currenLoction
+            print("go")
+            isLocationing = false
             locationDidUpdatedCallback?(currenLoction)
         }
     }
     
     @objc dynamic func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("定位失败：\(error)")
+        isLocationing = false
         self.stopUpdatingLocation()
         locationDidUpdatedCallback?(nil)
     }
 }
-
-
-
-
-private extension CLLocation  {
-    
-    /// 定位数据是否相同（针对经纬度）
-    /// - Parameter other:
-    /// - Returns:
-    @objc dynamic func isEqualWithCoordinate(_ other: CLLocation) -> Bool {
-        if self == other {
-            return true
-        }
-        let thisCoordinate  = self.coordinate
-        let otherCoordinate = other.coordinate
-        let deviation: CLLocationDegrees = 0.0000001
-        if (thisCoordinate.latitude - otherCoordinate.latitude) < deviation &&
-            (thisCoordinate.longitude - otherCoordinate.longitude) < deviation {
-            //两者经纬度偏差小于0.0000001内，认为定位数据相同
-            return true
-        }
-        return false
-    }
-    
-    
-}
-

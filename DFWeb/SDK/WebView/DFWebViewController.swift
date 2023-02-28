@@ -133,7 +133,8 @@ class DFWebViewController: UIViewController, WKNavigationDelegate {
     
     //MARK: setup
     @objc dynamic private func setupNavigateBar() {
-        let backImage = UIImage(named: "df_return_back")?.withRenderingMode(.alwaysOriginal)
+        let image = DFResource.imageName("df_return_back")
+        let backImage = image?.withRenderingMode(.alwaysOriginal)
         let leftBar = UIBarButtonItem.init(image: backImage,
                                            style: .plain,
                                            target: self,

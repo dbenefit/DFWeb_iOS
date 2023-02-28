@@ -41,6 +41,7 @@ class DFWQRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         self.navigationController?.navigationBar.shadowImage = nil
         if self.isSimulator() {
             //模拟器直接return
+            self.addSubviews()
             return
         }
         self.isAcesssedCamera { (authorized, requested) in
@@ -233,7 +234,7 @@ class DFWQRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsD
      */
     @objc lazy var backButton: UIButton = {
         let button = UIButton.init(type: .custom)
-        button.setImage(UIImage.init(named: "dfw_return_white"), for: .normal)
+        button.setImage(DFResource.imageName("dfw_return_white"), for: .normal)
         button.addTarget(self, action: #selector(backBtnclick), for: .touchUpInside)
         return button
     }()
@@ -242,7 +243,7 @@ class DFWQRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsD
      */
     @objc lazy var lightButton: UIButton = {
         let button = UIButton.init(type: .custom)
-        button.setImage(UIImage.init(named: "dfw_scan_light"), for: .normal)
+        button.setImage(DFResource.imageName("dfw_scan_light"), for: .normal)
         button.addTarget(self, action: #selector(QRCodeLightBtnClick), for: .touchUpInside)
         return button
     }()
@@ -251,7 +252,7 @@ class DFWQRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsD
      */
     @objc lazy var phontsButton: UIButton = {
         let button = UIButton.init(type: .custom)
-        button.setImage(UIImage.init(named: "dfw_scan_picture"), for: .normal)
+        button.setImage(DFResource.imageName("dfw_scan_picture"), for: .normal)
         button.addTarget(self, action: #selector(QRCodePhotosBtnClick), for: .touchUpInside)
         return button
     }()
@@ -266,14 +267,14 @@ class DFWQRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsD
      扫描线
      */
     @objc lazy var lineImgView: UIImageView = {
-        let imageView = UIImageView.init(image:UIImage.init(named: "dfw_scan_line"))
+        let imageView = UIImageView.init(image: DFResource.imageName("dfw_scan_line"))
         return imageView
     }()
     /**
      扫描框
      */
     @objc lazy var scanImgView: UIImageView = {
-        let imageView = UIImageView.init(image:UIImage.init(named: "dfw_scan_small"))
+        let imageView = UIImageView.init(image: DFResource.imageName("dfw_scan_small"))
         return imageView
     }()
     /**
