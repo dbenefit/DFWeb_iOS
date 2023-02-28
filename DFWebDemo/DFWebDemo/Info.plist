@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>授权App获取您的照相机权限</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>授权App获取您的位置</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>授权App获取您的位置</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>授权App获取您的位置</string>
+</dict>
+</plist>
