@@ -1,0 +1,10 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+platform:ios,'11.0'
+
+target “DFWebPodDemo” do
+use_frameworks! # 运用 Dynamic Framework
+#use_modular_headers!
+    pod 'DFWeb'
+end
+

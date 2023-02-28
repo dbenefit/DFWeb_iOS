@@ -33,7 +33,7 @@ local.properties
 # Log Files
 *.log
 .DS_Store
-!*.xcworkspace/contents.xcworkspacedata
+*.xcworkspace/
 
 # Python Files
 *.pyc
