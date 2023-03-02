@@ -40,7 +40,7 @@ class DFWebView: WKWebView, WKNavigationDelegate, WKUIDelegate, WKScriptMessageH
     @objc private static var userAgent: String = ""
     @objc private var userAgentWeb: WKWebView?
     ///userAgent标识
-    @objc private static var userAgentFlag: String = "-DF-APP"
+    @objc private static var userAgentFlag: String = ""
     
     
     //MARK: Override
@@ -66,7 +66,7 @@ class DFWebView: WKWebView, WKNavigationDelegate, WKUIDelegate, WKScriptMessageH
         self.allowsLinkPreview=false
         //为解决ios12 useragent不生效问题
         if Self.userAgent != "" {
-            self.customUserAgent = Self.userAgent + "-DF-APP-" + Self.userAgentFlag
+            self.customUserAgent = Self.userAgent + "-BFD-APP-" + Self.userAgentFlag
         }else {
             let fakeView = WKWebView.init(frame: frame, configuration: config)
             self.userAgentWeb = fakeView
@@ -74,7 +74,7 @@ class DFWebView: WKWebView, WKNavigationDelegate, WKUIDelegate, WKScriptMessageH
                 if error == nil && result != nil{
                     if let agent = result as? String {
                         Self.userAgent = agent
-                        let userAgent = agent + "-DF-APP-" + Self.userAgentFlag
+                        let userAgent = agent + "-BFD-APP-" + Self.userAgentFlag
                         self?.customUserAgent = userAgent
                     }
                 }

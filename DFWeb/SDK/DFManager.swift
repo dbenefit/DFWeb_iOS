@@ -65,12 +65,13 @@ extension DFManager {
     @objc dynamic public func openScan(_ currentPage: UIViewController,
                                        callback:@escaping ((_ result: String) ->Void)) {
         let vc = DFWQRScanViewController.init()
-        vc.modalPresentationStyle = .fullScreen
         vc.isPresentType = true
         vc.getResultUrl { (result) in
             callback(result)
         }
-        currentPage.present(vc, animated: true)
+        let naiv = UINavigationController(rootViewController: vc)
+        naiv.modalPresentationStyle = .fullScreen
+        currentPage.present(naiv, animated: true)
     }
     
     /// 获取定位经纬度

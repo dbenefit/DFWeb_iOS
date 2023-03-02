@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
   s.name         = 'DFWeb'
   s.version      = '1.0.0'
   s.summary      = '东福WebSDk集成'
-  s.homepage     = 'https://github.com/dbenefit/DFWeb_iOS.git'
+  s.homepage     = 'https://github.com/dbenefit/DFWeb_iOS'
   s.license      = 'MIT'
   s.authors      = {'dbenefit' => 'ext-system@dongfangfuli.com'}
   s.platform     = :ios, '11.0'

@@ -25,8 +25,7 @@ enum DFWebCommandMethodType: String {
 /// - 回调的状态码
 enum DFWebCommandCallBackCodeType: String {
     case Success                    = "0"                           //成功
-    case NotFound                   = "-1"                          //方法未找到
-    case Failure                    = "-2"                          //失败
+    case Failure                    = "-1"                          //错误信息
 
 }
 
@@ -55,6 +54,7 @@ class DFWebCommand: NSObject, DFWebCommandDelegate {
         super.init()
     }
     
+    
     //MARK: 接收js方法参数
     @objc dynamic public class func webCommand(didReceive message: Any, webView: DFWebView) {
         guard message is Dictionary<String, Any> else {
@@ -81,14 +81,13 @@ class DFWebCommand: NSObject, DFWebCommandDelegate {
             plugin?.handlerJsMessage(message: body)
         }else {
             var respData = Dictionary<String, Any>()
-            respData["code"] = DFWebCommandCallBackCodeType.NotFound.rawValue
+            respData["code"] = DFWebCommandCallBackCodeType.Failure.rawValue
             if(body[kDWFWebCallbackTag] != nil){
                 respData[kDWFWebCallbackTag] = body[kDWFWebCallbackTag]
             }
             DFWebCommand.sharedCommand.commandJsCompletedCallback(respData: respData,
                                                                    webView: webView)
         }
-        
     }
     
     

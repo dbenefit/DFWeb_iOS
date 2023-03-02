@@ -34,11 +34,9 @@ class DFWQRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         }
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.black
-        self.navigationController?.navigationBar.shadowImage = nil
         if self.isSimulator() {
             //模拟器直接return
             self.addSubviews()
@@ -87,20 +85,17 @@ class DFWQRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
         DispatchQueue.global().async {
-            if !self.session.isRunning {
-                self.session.startRunning()
-            }
+            self.startRunning()
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
         DispatchQueue.global().async {
-            if !self.session.isRunning {
-                //停止扫描
-                self.session.stopRunning()
-            }
+            self.stopRunning()
         }
         
     }
@@ -117,8 +112,8 @@ class DFWQRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         }else{
             self.navigationController?.popViewController(animated: true)
         }
-       
-
+        self.timer?.invalidate()
+        self.timer = nil
     }
     //MARK: private setup
     @objc dynamic private func noAuthorized() {
@@ -127,13 +122,7 @@ class DFWQRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                                                      preferredStyle: .alert)
         let cancelAction = UIAlertAction.init(title: "取消",
                                               style: .default) { (action) in
-            if self.navigationController?.presentingViewController != nil {
-                self.navigationController?.dismiss(animated: true, completion: {
-                    
-                })
-            }else {
-                self.navigationController?.popViewController(animated: true)
-            }
+            self.backBtnclick(sender: self.backButton)
         }
         let settingAction = UIAlertAction.init(title: "去设置",
                                                style: .default) { (action) in
@@ -359,6 +348,7 @@ extension DFWQRScanViewController{
         self.view.addConstraints([phontsRight, phontsCenterY])
         phontsButton.addConstraints([phontsWidth, phontsHeight])
     }
+    
 }
 
 //MARK:--打开闪光灯的方法
@@ -565,13 +555,21 @@ extension DFWQRScanViewController {
         if self.scanResultBlock != nil {
             self.scanResultBlock!(resultString)
         }
-        if self.isPresentType {
-            self.dismiss(animated: true) {
-                
-            }
-        }else {
-            self.navigationController?.popViewController(animated: true)
+        self.backBtnclick(sender: backButton)
+    }
+    
+    @objc dynamic private func startRunning() {
+        if !self.session.isRunning {
+            self.session.startRunning()
         }
+        self.timer?.fireDate = Date.distantPast
+    }
+    
+    @objc dynamic private func stopRunning() {
+        if self.session.isRunning {
+            self.session.stopRunning()
+        }
+        self.timer?.fireDate = Date.distantFuture
     }
     
     @objc dynamic public func getResultUrl(block:@escaping ScanResultBlock) {
@@ -580,6 +578,7 @@ extension DFWQRScanViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    
 }
 
 //MARK:--访问相册和从相册解析二维码的方法
@@ -597,7 +596,6 @@ extension DFWQRScanViewController:UIImagePickerControllerDelegate,UINavigationCo
 
     @objc dynamic func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         self.dismiss(animated: true) { () in }
-        session.stopRunning()
         
         var image = (info as NSDictionary).object(forKey: UIImagePickerController.InfoKey.editedImage) as? UIImage
         if image == nil {
@@ -611,7 +609,6 @@ extension DFWQRScanViewController:UIImagePickerControllerDelegate,UINavigationCo
     
     @objc dynamic private func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         self.dismiss(animated: true) { () in }
-        session.stopRunning()
         
         var image = (info as NSDictionary).object(forKey: UIImagePickerController.InfoKey.editedImage) as? UIImage
         if image == nil {
@@ -625,17 +622,22 @@ extension DFWQRScanViewController:UIImagePickerControllerDelegate,UINavigationCo
  
     /// 扫描图片二维码
     @objc func scanQRCodeImage(image: UIImage)  {
-//        guard let result = DFWScanCodeImage.recognizeQRImage(image: image) else {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-//                LoadingHUD.showToastWithStatus(status: "message.scan.type.error".localized)
-//            }
-//            return
-//        }
         let result = image.decodeQRImage(with: image)
         if result == "" {
 //df            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
 //                LoadingHUD.showToastWithStatus(status: "message.scan.type.error".localized)
 //            }
+            let alert = UIAlertController(title: "未发现二维码",
+                                          message: nil,
+                                          preferredStyle: .alert)
+            let cancelAction = UIAlertAction.init(title: "取消",
+                                                  style: .default) { (action) in
+                self.startRunning()
+            }
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true) {
+                self.stopRunning()
+            }
             return
         }
         // 跳转的方法
