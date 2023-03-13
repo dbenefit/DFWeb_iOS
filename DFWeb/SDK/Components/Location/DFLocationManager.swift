@@ -108,7 +108,6 @@ extension DFLocationManager: CLLocationManagerDelegate {
             if !isLocationing {
                 return
             }
-            print("go")
             isLocationing = false
             locationDidUpdatedCallback?(currenLoction)
         }
